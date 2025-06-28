@@ -1,6 +1,14 @@
-# Jira Ticket Manager - Architecture
+# Jira Ticket Manager - Modular Architecture
 
 A Flask-based application for creating Jira tickets from Excel files with a clean, modular architecture designed for scalability and maintainability.
+
+## 📚 Documentation
+
+For detailed system architecture and API documentation, see the [docs/](./docs/) folder:
+
+- **[System Architecture](./docs/SYSTEM_ARCHITECTURE.md)** - Complete high-level design with diagrams
+- **[API Mapping](./docs/API_MAPPING.md)** - Detailed API endpoints and request flows
+- **[Documentation Index](./docs/README.md)** - Overview of all documentation
 
 ## 🏗️ Architecture Overview
 
@@ -16,6 +24,7 @@ jira/
 ├── helpers.py          # Utility functions
 ├── config.py           # Configuration management
 ├── requirements.txt    # Python dependencies
+├── docs/               # Documentation
 ├── static/             # Static assets (CSS, JS)
 ├── templates/          # HTML templates
 └── uploads/            # Temporary file storage

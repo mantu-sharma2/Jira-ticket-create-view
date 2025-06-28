@@ -239,31 +239,31 @@ class JiraService:
         """
         return self._make_request('GET', f'/rest/api/2/issue/{ticket_key}')
     
-    def update_ticket(self, ticket_key: str, update_data: Dict[str, Any]) -> Tuple[bool, Any, str]:
-        """
-        Update an existing ticket
+    # def update_ticket(self, ticket_key: str, update_data: Dict[str, Any]) -> Tuple[bool, Any, str]:
+    #     """
+    #     Update an existing ticket
         
-        Args:
-            ticket_key (str): Ticket key to update
-            update_data (Dict[str, Any]): Data to update
+    #     Args:
+    #         ticket_key (str): Ticket key to update
+    #         update_data (Dict[str, Any]): Data to update
             
-        Returns:
-            Tuple[bool, Any, str]: (success, response_data, error_message)
-        """
-        return self._make_request('PUT', f'/rest/api/2/issue/{ticket_key}', update_data)
+    #     Returns:
+    #         Tuple[bool, Any, str]: (success, response_data, error_message)
+    #     """
+    #     return self._make_request('PUT', f'/rest/api/2/issue/{ticket_key}', update_data)
     
-    def delete_ticket(self, ticket_key: str) -> Tuple[bool, str]:
-        """
-        Delete a ticket (if permissions allow)
+    # def delete_ticket(self, ticket_key: str) -> Tuple[bool, str]:
+    #     """
+    #     Delete a ticket (if permissions allow)
         
-        Args:
-            ticket_key (str): Ticket key to delete
+    #     Args:
+    #         ticket_key (str): Ticket key to delete
             
-        Returns:
-            Tuple[bool, str]: (success, error_message)
-        """
-        success, _, error = self._make_request('DELETE', f'/rest/api/2/issue/{ticket_key}')
-        return success, error
+    #     Returns:
+    #         Tuple[bool, str]: (success, error_message)
+    #     """
+    #     success, _, error = self._make_request('DELETE', f'/rest/api/2/issue/{ticket_key}')
+    #     return success, error
     
     def search_tickets(self, jql: str, max_results: int = 50) -> Tuple[bool, Any, str]:
         """
@@ -335,6 +335,7 @@ class JiraService:
                         'summary': ticket_data.get('summary'),
                         'status': 'created'
                     })
+                    logger.info(f"Created ticket: {ticket_info.get('key')} (ID: {ticket_info.get('id')})")
                 else:
                     results['failed'] += 1
                     results['errors'].append({
@@ -342,6 +343,7 @@ class JiraService:
                         'summary': ticket_data.get('summary'),
                         'error': error
                     })
+                    logger.error(f"Error creating ticket {index + 1}: {e}")
                 
                 # Add small delay to avoid rate limiting
                 time.sleep(0.5)
