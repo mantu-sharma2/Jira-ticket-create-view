@@ -1,0 +1,19 @@
+# Jira Ticket Manager - Dependencies
+# Core Flask framework and extensions
+Flask==2.3.3
+Flask-CORS==4.0.0
+
+# Data processing
+pandas==1.5.3
+openpyxl==3.1.2
+xlrd==2.0.1
+
+# HTTP requests
+requests==2.31.0
+
+# Development and packaging
+pyinstaller==5.13.2
+pywebview==4.4.1
+
+# Additional utilities
+python-dotenv==1.0.0 
