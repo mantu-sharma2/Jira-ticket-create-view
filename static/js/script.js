@@ -238,7 +238,7 @@ class JiraTicketManager {
     formData.append("file", file);
 
     // Upload file
-    fetch("/upload", {
+    fetch("/api/upload", {
       method: "POST",
       body: formData,
     })
@@ -252,13 +252,13 @@ class JiraTicketManager {
       .then((data) => {
         console.log("Upload response data:", data);
         if (data.success) {
-          this.currentPreviewId = data.preview_id;
+          this.currentPreviewId = data.data.preview_id;
           this.elements.parsingMessage.textContent =
             "File parsed successfully!";
 
           // Show preview after delay
           setTimeout(() => {
-            this.showPreview(data);
+            this.showPreview(data.data);
           }, 1000);
         } else {
           this.showError(data.error || "Upload failed");
@@ -386,7 +386,7 @@ class JiraTicketManager {
     this.showSection("progress");
 
     // Start ticket creation
-    fetch("/create-tickets", {
+    fetch("/api/create-tickets", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -403,7 +403,7 @@ class JiraTicketManager {
       })
       .then((data) => {
         if (data.success) {
-          this.currentOperationId = data.operation_id;
+          this.currentOperationId = data.data.operation_id;
           this.startStatusCheck();
         } else {
           this.showError(data.error || "Failed to start ticket creation");
@@ -432,14 +432,18 @@ class JiraTicketManager {
     }
 
     this.statusCheckInterval = setInterval(() => {
-      fetch(`/status/${this.currentOperationId}`)
+      fetch(`/api/status/${this.currentOperationId}`)
         .then((response) => response.json())
         .then((data) => {
-          this.updateProgress(data);
+          if (data.success) {
+            this.updateProgress(data.data);
 
-          if (data.status === "completed") {
-            clearInterval(this.statusCheckInterval);
-            this.showFinalResults(data);
+            if (data.data.status === "completed") {
+              clearInterval(this.statusCheckInterval);
+              this.showFinalResults(data.data);
+            }
+          } else {
+            console.error("Status check error:", data.error);
           }
         })
         .catch((error) => {
@@ -684,35 +688,32 @@ class JiraTicketManager {
   }
 
   /**
-   * Search for ticket
+   * Search for a ticket
    */
   searchTicket() {
-    const ticketId = this.elements.ticketIdInput?.value.trim();
-
+    const ticketId = this.elements.ticketIdInput.value.trim();
     if (!ticketId) {
       this.showTicketError("Please enter a ticket ID");
       return;
     }
 
     // Show loading state
-    if (this.elements.ticketDetails) {
-      this.elements.ticketDetails.style.display = "none";
-    }
-    if (this.elements.errorMessage) {
-      this.elements.errorMessage.style.display = "none";
-    }
+    this.setButtonLoading(this.elements.searchBtn, true, "Searching...");
 
-    fetch(`/ticket/${ticketId}`)
+    fetch(`/api/ticket/${ticketId}`)
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
           this.displayTicketDetails(data.data);
         } else {
-          this.showTicketError(data.error);
+          this.showTicketError(data.error || "Ticket not found");
         }
       })
       .catch((error) => {
-        this.showTicketError("Error fetching ticket: " + error.message);
+        this.showTicketError("Error searching ticket: " + error.message);
+      })
+      .finally(() => {
+        this.setButtonLoading(this.elements.searchBtn, false, "Search");
       });
   }
 
