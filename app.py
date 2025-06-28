@@ -49,33 +49,26 @@ def create_app():
 
 
 def main():
-    """
-    Main entry point for the application
-    """
-    try:
-        # Create app
-        app = create_app()
-        
-        # Get configuration
-        host = os.environ.get('HOST', '0.0.0.0')
-        port = int(os.environ.get('PORT', 4000))
-        debug = os.environ.get('DEBUG', 'False').lower() == 'true'
-        
-        logger.info(f"Starting Jira Ticket Manager on {host}:{port}")
-        logger.info(f"Debug mode: {debug}")
-        
-        # Run app
-        app.run(
-            host=host,
-            port=port,
-            debug=debug,
-            threaded=True
-        )
-        
-    except Exception as e:
-        logger.error(f"Failed to start application: {e}")
-        raise
+    """Main function to run the Flask application"""
+    app = create_app()
+    
+    # Import webbrowser here to avoid import issues
+    import webbrowser
+    import threading
+    import time
+    
+    def open_browser():
+        """Open browser after a short delay"""
+        time.sleep(2)  # Wait for Flask to start
+        webbrowser.open('http://127.0.0.1:4000')
+    
+    # Start browser in background thread
+    browser_thread = threading.Thread(target=open_browser, daemon=True)
+    browser_thread.start()
+    
+    # Run the Flask app
+    app.run(host='127.0.0.1', port=4000, debug=False)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main() 
