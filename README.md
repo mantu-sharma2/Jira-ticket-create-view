@@ -1,4 +1,4 @@
-# Jira Ticket Manager - Modular Architecture
+# Jira Ticket Manager - Architecture
 
 A Flask-based application for creating Jira tickets from Excel files with a clean, modular architecture designed for scalability and maintainability.
 
